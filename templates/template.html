@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Pokémons</title>
+</head>
+<body>
+
+    <h1>Lista de Pokémons</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>URL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pokemon in pokemons['results'] %}
+            <tr>
+                <td>{{ pokemon['name'] }}</td>
+                <td><a href="{{ pokemon['url'] }}">{{ pokemon['url'] }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
