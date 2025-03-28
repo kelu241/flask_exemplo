@@ -16,10 +16,10 @@
             </tr>
         </thead>
         <tbody>
-            {% for pokemon in pokemons['results'] %}
+            {% for pokemon in pokemons %}
             <tr>
-                <td>{{ pokemon['name'] }}</td>
-                <td><a href="{{ pokemon['url'] }}">{{ pokemon['url'] }}</a></td>
+                <td>{{ pokemon.nome}}</td>
+                <td><a href="{{ pokemon.valor}}">{{ pokemon.valor }}</a></td>
             </tr>
             {% endfor %}
         </tbody>
