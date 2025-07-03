@@ -11,47 +11,50 @@ services:
             - sql:/var/opt/mssql
             - ./sql:/script
         command: >
-            /bin/bash -c 
-            "/opt/mssql/bin/sqlservr &
-            while ! /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Panzer37*' -Q 'SELECT 1' &>/dev/null; do 
-            sleep 5; 
-            done && 
-            /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Panzer37*' -i /script/init-db.sql -C && wait"
+            /bin/bash -c "/opt/mssql/bin/sqlservr & while ! /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Panzer37*' -Q 'SELECT 1' -C &>/dev/null; do sleep 5; done; /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Panzer37*' -i /script/init-db.sql -C; wait"
+    
+        # command: >
+            # /bin/bash -c 
+            # "/opt/mssql/bin/sqlservr &
+            # while ! /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Panzer37*' -Q 'SELECT 1' -C &>/dev/null; do 
+            # sleep 5; 
+            # done && 
+            # /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Panzer37*' -i /script/init-db.sql -C && wait"
 
         networks:
             - luciano-network
-        # healthcheck:
-        #  test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Panzer37*' -Q "IF DB_ID('pockemons') IS NOT NULL SELECT 1" -C || exit 1
-        #  interval: 10s
-        #  retries: 5
-        #  start_period: 30s
-        #  timeout: 5s    
+        healthcheck:
+         test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Panzer37*' -Q "IF DB_ID('pockemons') IS NOT NULL SELECT 1" -C || exit 1
+         interval: 10s
+         retries: 5
+         start_period: 30s
+         timeout: 5s    
          
-    # node:
-    #     container_name: node_luciano
-    #     ports:
-    #         - "3333:3333"
-    #     build:    
-    #         context: ./nodeproject/
-    #         dockerfile: Dockerfile
-    #     volumes:
-    #         - luciano-node:/app/data
-    #     networks:
-    #         - luciano-network
-    #     depends_on:
-    #          sqlserver:
-    #             condition: service_healthy   
-    # flask:
-    #     container_name: luciano-flask
-    #     build: 
-    #         context: .
-    #         dockerfile: Dockerfile   
-    #     ports:
-    #         - "3450:3450"   
-    #     networks:
-    #         - luciano-network 
-    #     depends_on:
-    #         - node 
+    node:
+        container_name: node_luciano
+        ports:
+            - "3333:3333"
+        build:    
+            context: ./nodeproject/
+            dockerfile: Dockerfile
+        volumes:
+            - luciano-node:/app/data
+        networks:
+            - luciano-network
+        depends_on:
+             sqlserver:
+                condition: service_healthy   
+    flask:
+        container_name: luciano-flask
+        build: 
+            context: .
+            dockerfile: Dockerfile   
+        ports:
+            - "3450:3450"   
+        networks:
+            - luciano-network 
+        depends_on:
+            - node 
 
 
 
